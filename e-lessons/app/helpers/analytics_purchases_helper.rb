@@ -1,0 +1,2 @@
+module AnalyticsPurchasesHelper
+end

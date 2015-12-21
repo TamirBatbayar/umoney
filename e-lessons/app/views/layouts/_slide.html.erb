@@ -1,0 +1,49 @@
+<% slides = get_slides %>
+<% active = slides.first.id %>
+    <div class="row carousel-holder">
+
+        <div class="col-md-12">
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <% number = 0 %>
+                    <% slides.each do |slide| %>
+                        <% if slide.id == active %>
+                            <li data-target="#carousel-example-generic" data-slide-to=<%= number%> class="active"></li>
+                        <% else %>
+                            <li data-target="#carousel-example-generic" data-slide-to=<%= number%> ></li>
+                        <% end %>
+                        <% number += 1 %>
+                    <% end %>
+                </ol>
+                <div class="carousel-inner">
+                    
+                    <% slides.each do |slide| %>
+                        <% if slide.id == active %>
+                            <div class="item active">
+                                <%= image_tag slide.picture.url(:medium), :class => "slide-image" %>
+                              <div class="carousel-caption">
+                                <h1><%= slide.name %></h1>
+                                <p><%= slide.description %></p>
+                              </div>
+                            </div>
+                        <% else %>
+                            <div class="item">
+                                <%= image_tag slide.picture.url(:medium), :class => "slide-image" %>
+                              <div class="carousel-caption">
+                                <h1><%= slide.name %></h1>
+                                <p><%= slide.description %></p>
+                              </div>
+                            </div>
+                        <% end %>
+                    <% end%>
+                </div>
+                <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                </a>
+                <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
+            </div>
+        </div>
+
+    </div>

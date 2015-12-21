@@ -1,0 +1,2 @@
+module UmoneyCheckHelper
+end

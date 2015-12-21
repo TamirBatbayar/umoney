@@ -1,0 +1,139 @@
+
+Using Checkout and Rails
+
+Get up and running with Checkout and Ruby on Rails in no time at all! If you need help after reading this, check out our answers to common questions or chat live with other developers in #stripe on freenode.
+
+Stripe’s Checkout makes it easy to securely accept a customer’s credit card details. By directly sending card information from the customer’s browser to Stripe’s server, receiving a representative token in return, you can provide a seamless user experience without a heavy PCI compliance burden.
+Getting started
+
+The first step is adding the Stripe gem to your application’s Gemfile:
+
+gem 'stripe'
+
+Then, run bundle install to install the gem.
+
+Next, generate a new Charges controller:
+
+$ rails g controller charges
+
+The controller does two things:
+
+    Shows a credit card form (using Checkout).
+    Creates the actual charges by calling our API.
+
+Add two actions to the controller:
+
+def new
+end
+
+def create
+  # Amount in cents
+  @amount = 500
+
+  customer = Stripe::Customer.create(
+    :email => params[:stripeEmail],
+    :source  => params[:stripeToken]
+  )
+
+  charge = Stripe::Charge.create(
+    :customer    => customer.id,
+    :amount      => @amount,
+    :description => 'Rails Stripe customer',
+    :currency    => 'usd'
+  )
+
+rescue Stripe::CardError => e
+  flash[:error] = e.message
+  redirect_to new_charge_path
+end
+
+The code first creates a Customer object using two POST parameters. You can create a charge directly, but creating a customer first allows for repeat billing. The :source property is set to the stripeToken parameter, representing the payment method provided. The token is automatically created by Checkout.
+
+Stripe expects amounts to be in cents; since the charge is for $5, the amount parameter is assigned 500. A Charge also takes an optional :description parameter, which can be anything meaningful to you. The customer ID is provided in the charge request, meaning the previously stored payment method will be charged.
+
+Some payment attempts fail for a variety of reasons, such as an invalid CVC, bad card number, or general decline. Any Stripe::CardError exception will be caught and stored in the flash hash.
+Defining the route
+
+So users can access the newly created controller, add a route to it in config/routes.rb:
+
+resources :charges
+
+Configuring the application
+
+The application makes use of your publishable and secret API keys to interact with Stripe. An initializer is a good place to set these values, which will be provided when the application is started.
+
+Add the following to config/initializers/stripe.rb:
+
+Rails.configuration.stripe = {
+  :publishable_key => ENV['PUBLISHABLE_KEY'],
+  :secret_key      => ENV['SECRET_KEY']
+}
+
+Stripe.api_key = Rails.configuration.stripe[:secret_key]
+
+These keys values are pulled out of environmental variables so as not to hardcode them. It’s best practice not to write API keys into your code, where they could easily wind up in source control repositories and other non-private destinations.
+Creating the views
+
+The next step is to create the relevant views: for the credit card form and for the charge response. Create a charges.html.erb layout under app/views/layouts:
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+  <%= yield %>
+</body>
+</html>
+
+Now create new.html.erb under app/views/charges, which is the checkout page. Notice the page uses Checkout. Checkout displays a credit card overlay form, performs basic validation, and reports errors inline.
+
+The form also has a place to report any server-side error that may occur:
+
+<%= form_tag charges_path do %>
+  <article>
+    <% if flash[:error].present? %>
+      <div id="error_explanation">
+        <p><%= flash[:error] %></p>
+      </div>
+    <% end %>
+    <label class="amount">
+      <span>Amount: $5.00</span>
+    </label>
+  </article>
+
+  <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="<%= Rails.configuration.stripe[:publishable_key] %>"
+          data-description="A month's subscription"
+          data-amount="500"
+          data-locale="auto"></script>
+<% end %>
+
+Finally, make a create.html.erb view under app/views/charges that shows users a success message:
+
+<h2>Thanks, you paid <strong>$5.00</strong>!</h2>
+
+And that’s a wrap! A complete Stripe and Rails integration in a matter of minutes.
+Testing the integration
+
+To test the integration, start the Rails server, making sure to set the environmental variables to your publishable and secret keys. For now, use the test keys, rather than your live ones:
+
+PUBLISHABLE_KEY=pk_test_XCCGSJmhbNzagARKbOF4Sy2e SECRET_KEY=sk_test_PFsAEEAKCvJQDvgv3CtT3eUh rails s
+
+As a convenience, we’ve pre-filled the example with your test API keys. Only you can see these values.
+
+Now, navigate to http://localhost:3000/charges/new to see the payment form ready to use. If you’re using test API keys, you can try the process with some dummy data. Enter the special credit card number 4242 4242 4242 4242, a three-digit CVC, and any expiry date in the future. Submitting the form should bring up the successful charge page, and you can see the charge in the Dashboard.
+Deploying to Heroku
+
+Now that you’ve created a basic payment page, you can deploy it somewhere so people can use it! Heroku is an awesome way to do this, and integrates seamlessly with Rails and Rack. First, get a Heroku account, and install the Heroku Toolbelt.
+
+Now tell Heroku to deploy the application:
+
+git init
+git add .
+git commit -m 'My simple Stripe application'
+heroku create
+heroku config:set PUBLISHABLE_KEY=pk_test_XCCGSJmhbNzagARKbOF4Sy2e SECRET_KEY=sk_test_PFsAEEAKCvJQDvgv3CtT3eUh
+git push heroku master
+heroku open
+
+Again, when you’re ready for production usage, provide your live API keys in the deploy.

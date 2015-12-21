@@ -1,0 +1,15 @@
+<div class="authform">
+<h1>Subscribe for lesson</h1>
+	<%= form_tag({controller: "umoney_check", action: "index"}, method: "post") do %>
+	  <div class="form-inputs">
+	  	<p>Card id:</p>
+	    <%= text_field_tag(:unique_id) %>
+	    <p>Amount in tugrug:</p>
+	    <%= number_field_tag(:money) %>
+	  </div>
+
+	  <div class="form-actions">
+	    <%= submit_tag("Submit") %>
+	  </div>
+	<% end %>
+</div>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= content_for?(:title) ? yield(:title) : "Ecommerce" %></title>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Ecommerce" %>">
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+    <%= csrf_meta_tags %>
+    <script type="application/javascript" src="http://www.telize.com/jsonip?callback=getip"></script>
+  </head>
+  <body>
+    <header>
+      <%= render 'layouts/navigation' %>
+    </header>
+   <%= render 'layouts/messages' %>
+   <% if user_signed_in? %>
+
+       <% end %>
+    <div class="container">
+      <div class="row" style="padding-top:60px;">
+      <p id="notice"><%= notice %></p>
+        <%= yield %>
+      </div>
+        <hr>
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; www.bee-army.com 2015</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+  </body>
+</html>

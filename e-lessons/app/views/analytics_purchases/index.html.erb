@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Analytics Purchases</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>User session</th>
+      <th>Product</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @analytics_purchases.each do |analytics_purchase| %>
+      <tr>
+        <td><%= analytics_purchase.user_session %></td>
+        <td><%= analytics_purchase.product_id %></td>
+        <td><%= link_to 'Show', analytics_purchase %></td>
+        <td><%= link_to 'Edit', edit_analytics_purchase_path(analytics_purchase) %></td>
+        <td><%= link_to 'Destroy', analytics_purchase, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Analytics purchase', new_analytics_purchase_path %>

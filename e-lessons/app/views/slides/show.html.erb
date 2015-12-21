@@ -1,0 +1,16 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @slide.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @slide.description %>
+</p>
+
+<%= image_tag @slide.picture.url(:medium) %>
+
+<%= link_to 'Edit', edit_slide_path(@slide) %> |
+<%= link_to 'Back', slides_path %>

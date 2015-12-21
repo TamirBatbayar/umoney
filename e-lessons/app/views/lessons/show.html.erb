@@ -1,0 +1,37 @@
+<div class="row row-offcanvas row-offcanvas-right">
+
+        <div class="col-xs-12 col-sm-9">
+          <p class="pull-right visible-xs">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+          </p>
+   
+          <div class="row">
+			<p id="notice"><%= notice %></p>
+
+			<p>
+			  <strong>Name:</strong>
+			  <%= @lesson.name %>
+			</p>
+
+			<p>
+			  <strong>Detail:</strong>
+			  <%= @lesson.detail %>
+			</p>
+
+			<p>
+			  <strong>Page content:</strong>
+			  <%= @lesson.page_content_id %>
+			</p>
+
+			<% if user_signed_in? %>
+				<% if current_user.admin? %>
+					<%= link_to 'Edit', edit_lesson_path(@lesson),:class => "btn btn-lg btn-primary" %> |
+					<%= link_to 'Back', lessons_path, :class => "btn btn-lg btn-default" %>
+				<% end %>
+			<% end %>
+
+          </div><!--/row-->
+        </div><!--/.col-xs-12.col-sm-9-->
+
+      </div>
+

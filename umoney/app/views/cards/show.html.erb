@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Unique:</strong>
+  <%= @card.unique_id %>
+</p>
+
+<p>
+  <strong>Money:</strong>
+  <%= @card.money %>
+</p>
+
+<%= link_to 'Edit', edit_card_path(@card) %> |
+<%= link_to 'Back', cards_path %>

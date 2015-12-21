@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User session:</strong>
+  <%= @analytics_purchase.user_session %>
+</p>
+
+<p>
+  <strong>Product:</strong>
+  <%= @analytics_purchase.product_id %>
+</p>
+
+<%= link_to 'Edit', edit_analytics_purchase_path(@analytics_purchase) %> |
+<%= link_to 'Back', analytics_purchases_path %>
